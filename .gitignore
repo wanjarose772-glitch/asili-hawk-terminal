@@ -1,0 +1,17 @@
+node_modules/
+frontend/dist/
+backend/.venv/
+backend/data/
+data/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.pytest-tmp/
+work/
+.vitest/
+.npm-cache/
+.pip-cache/
+*.tsbuildinfo

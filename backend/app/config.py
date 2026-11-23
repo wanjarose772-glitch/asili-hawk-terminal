@@ -1,0 +1,57 @@
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from functools import lru_cache
+from pathlib import Path
+
+
+class Settings(BaseSettings):
+    app_name: str = "ASILI HAWK"
+    version: str = "2.6.1-live-merge"
+    environment: str = "development"
+    # Was True by default — fine for local dev, wrong default for a
+    # deployed API (verbose errors/stack traces exposed to callers).
+    debug: bool = False
+
+    pumpfun_base: str = "https://frontend-api-v3.pump.fun"
+    dexscreener_base: str = "https://api.dexscreener.com"
+
+    birdeye_api_key: str = ""
+    helius_api_key: str = ""
+    solana_tracker_key: str = ""
+
+    # Birth-channel window
+    max_age_minutes: int = 360
+    min_curve_progress: float = 3.0
+    max_curve_progress: float = 99.5
+    min_usd_mcap: float = 400.0
+    max_usd_mcap: float = 500_000.0
+
+    # Active-trade channel (runners Jupiter-like)
+    active_max_age_minutes: int = 1440   # 24h
+    active_max_usd_mcap: float = 3_000_000.0
+
+    hybrid_emerging_min: int = 6
+    hybrid_emerging_max: int = 45
+    hybrid_postgrad_max: int = 180
+
+    min_reply_count: int = 0
+    cache_ttl_seconds: int = 25
+    provider_timeout_seconds: float = 10.0
+    enrichment_timeout_seconds: float = 6.0
+
+    # Where the sqlite snapshot store lives. Override with DB_PATH in
+    # deploy envs whose writable path differs (e.g. a mounted volume).
+    db_path: str = str(Path(__file__).resolve().parents[1] / "data" / "hawk_snapshots.db")
+
+    # CORS is limited to the local Vite development origins by default.
+    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
+
+    # Mutating operator endpoints stay disabled until a server-side token is configured.
+    hawk_control_token: str = ""
+    operator_api_token: str = ""
+
+    model_config = SettingsConfigDict(env_file=Path(__file__).resolve().parents[2] / ".env", extra="ignore")
+
+
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()

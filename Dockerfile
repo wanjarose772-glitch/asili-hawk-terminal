@@ -12,7 +12,7 @@ WORKDIR /app
 COPY backend/requirements.txt ./backend/requirements.txt
 RUN pip install --no-cache-dir -r backend/requirements.txt
 COPY backend/app ./backend/app
-COPY frontend/dist ./frontend/dist
+COPY --from=web-build /src/frontend/dist ./frontend/dist
 RUN mkdir -p /app/backend/data
 WORKDIR /app/backend
 EXPOSE 8000
